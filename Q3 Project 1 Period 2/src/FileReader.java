@@ -33,9 +33,25 @@ public class FileReader {
 			String rows = scan.next();
 			String cols = scan.next();
 			String levels = scan.next();
+			if(Integer.parseInt(rows)<=0 || Integer.parseInt(cols) <= 0 || Integer.parseInt(levels) <= 0) {
+				System.out.println("Not valid row column combinattion");
+				Queue<String> mapVals1 = new ArrayDeque<>();
+			}
 			while(scan.hasNext()) {
-				//String nextval = scan.next();
-				mapVals.add(scan.next());
+				String nextVal = scan.next();
+				
+				
+				if (!nextVal.matches("[.$W@]+")) {
+				    // nextVal contains characters other than . $ W @
+					System.out.println("Contains an invalid character");
+					Queue<String> mapVals1 = new ArrayDeque<>();
+					return mapVals1;
+
+				}
+				else {
+					mapVals.add(nextVal);
+				}
+				
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -51,18 +67,28 @@ public class FileReader {
 		Scanner scan;
 		try {
 			scan = new Scanner(file);
-			String rows = scan.next();
-			String cols = scan.next();
-			String[][] coords = new String[Integer.parseInt(rows)][Integer.parseInt(cols)];
+			String rows1 = scan.next();
+			String cols1 = scan.next();
+			String rows;
+			String cols;
+			String[][] coords = new String[Integer.parseInt(rows1)][Integer.parseInt(cols1)];
 			
 			
 			String levels = scan.next();
 			while(scan.hasNext()) {
 				String num = scan.next();
+				if (!num.matches("[.$W@]+")) {
+				    // nextVal contains characters other than . $ W @
+					System.out.println("Contains an invalid character");
+					String[][] coords1 = new String[0][0];
+					return coords1;
+
+				}
 				rows = scan.next();
 				cols = scan.next();
 				scan.next();
 				//String nextval = scan.next();
+				
 				coords[Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
 			}
 			for(int i = 0; i<coords.length;i++) {
