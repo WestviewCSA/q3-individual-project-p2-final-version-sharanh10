@@ -89,6 +89,12 @@ public class FileReader {
 				scan.next();
 				//String nextval = scan.next();
 				
+				if(Integer.parseInt(rows1) <= Integer.parseInt(rows) || Integer.parseInt(cols1)<=Integer.parseInt(cols)) {
+					System.out.println("Map specs isn't accurate");
+					String[][] coords1 = new String[0][0];
+					return coords1;
+
+				}
 				coords[Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
 			}
 			for(int i = 0; i<coords.length;i++) {
