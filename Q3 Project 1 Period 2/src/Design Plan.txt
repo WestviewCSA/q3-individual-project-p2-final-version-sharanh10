@@ -1,0 +1,9 @@
+Stack based approach:
+Start at W - check all adjacent squares
+Add each element to the queue - check for $
+If found, then we can go backwards to find the path
+If not found, then we can dequeue, add it to the visited queue and repeat
+
+Queue based approach: 
+Same as stack based, but now each pop will be the last added element
+We will essentially be completing one full path and checking for the $

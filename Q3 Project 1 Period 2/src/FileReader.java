@@ -21,6 +21,7 @@ public class FileReader {
 			}
 			System.out.println("");
 		}
+		System.out.println(queueBased(n));
 
 	}
 	
@@ -112,6 +113,60 @@ public class FileReader {
 		return null;
 		
 
+	}
+	
+	public static boolean queueBased(String[][] maze) {
+		Queue<String> mapVals = new ArrayDeque<>();
+		Queue<String> visited = new ArrayDeque<>();
+		int row = 1;
+		int col = 0;
+		String current = row + "," + col;
+		mapVals.add(current);
+		while(!mapVals.isEmpty()) {
+			row = Integer.parseInt(current.split(",")[0]);
+			col = Integer.parseInt(current.split(",")[1]);
+
+			visited.add(current);
+			//if not already added then add it
+			if(!(col-1 < 0)) {
+				mapVals.add(row + "," + (col-1));
+				if(maze[row][col-1].equals("$")) {
+					System.out.println((row) + "," + (col-1));
+
+					return true;
+				}
+			}
+			if(!(col+1 > maze[0].length-1)) {
+				mapVals.add(row + "," + (col+1));
+				if(maze[row][col+1].equals("$")) {
+					System.out.println((row) + "," + (col+1));
+					return true;
+				}
+			}
+			if(!(row-1 < 0)) {
+				mapVals.add((row-1) + "," + col);
+				if(maze[row-1][col].equals("$")) {
+					System.out.println((row-1) + "," + col);
+					return true;
+				}
+			}
+			if(!(row+1 > maze.length-1)) {
+				mapVals.add((row+1) + "," + col);
+				if(maze[row+1][col].equals("$")) {
+					System.out.println((row+1) + "," + col);
+					return true;
+				}
+			}
+			//check if any of them is the $ sign
+			
+			
+		
+			current = mapVals.poll();
+			//make row and col variblkes equal to wherever the current index is
+	
+		}
+		
+		return false;
 	}
 
 
