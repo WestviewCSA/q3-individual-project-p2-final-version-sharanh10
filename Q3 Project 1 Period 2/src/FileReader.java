@@ -8,6 +8,7 @@ public class FileReader {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		//call the StackBased class to get stack solution
 		
 		Queue q = getText("easyMap1");
 		while(!q.isEmpty()) {
