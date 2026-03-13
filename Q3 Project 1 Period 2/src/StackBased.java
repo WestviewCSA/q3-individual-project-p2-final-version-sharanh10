@@ -34,6 +34,8 @@ public class StackBased<T> {
 
 				}
 			}
+			if (row-1 >= 0) {
+	        }
 			col++;
 		}
 		
