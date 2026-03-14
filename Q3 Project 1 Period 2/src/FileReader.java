@@ -15,7 +15,7 @@ public class FileReader {
 			System.out.println(q.poll());
 		}
 		System.out.println("");
-		String[][] n = getTextCoords("easyMapCoords");
+		String[][] n = getTextCoords("easyMap2");
 		for(int i = 0; i<n.length;i++) {
 			for(int j = 0; j<n[0].length; j++) {
 				System.out.print(n[i][j]);
@@ -71,15 +71,16 @@ public class FileReader {
 			scan = new Scanner(file);
 			String rows1 = scan.next();
 			String cols1 = scan.next();
+			String levels = scan.next();
 			String rows;
 			String cols;
-			String[][] coords = new String[Integer.parseInt(rows1)][Integer.parseInt(cols1)];
+			String[][] coords = new String[Integer.parseInt(rows1)*Integer.parseInt(levels)][Integer.parseInt(cols1)];
 			
+			System.out.println(Integer.parseInt(rows1)*Integer.parseInt(levels));
 			
-			String levels = scan.next();
 			while(scan.hasNext()) {
 				String num = scan.next();
-				if (!num.matches("[.$W@]+")) {
+				if (!num.matches("[.$W@|]+")) {
 				    // nextVal contains characters other than . $ W @
 					System.out.println("Contains an invalid character");
 					String[][] coords1 = new String[0][0];
@@ -88,7 +89,10 @@ public class FileReader {
 				}
 				rows = scan.next();
 				cols = scan.next();
-				scan.next();
+				
+				levels = scan.next();
+				
+				int newRow = Integer.parseInt(levels)*Integer.parseInt(rows1)+ Integer.parseInt(rows);
 				//String nextval = scan.next();
 				
 				if(Integer.parseInt(rows1) <= Integer.parseInt(rows) || Integer.parseInt(cols1)<=Integer.parseInt(cols)) {
@@ -97,7 +101,7 @@ public class FileReader {
 					return coords1;
 
 				}
-				coords[Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
+				coords[newRow][Integer.parseInt(cols)] = num;
 			}
 			for(int i = 0; i<coords.length;i++) {
 				for(int j = 0; j<coords[0].length; j++) {
@@ -121,49 +125,57 @@ public class FileReader {
 		Queue<String> visited = new ArrayDeque<>();
 		int row = 1;
 		int col = 0;
+		//assume that starting position is at 1,0 for now - we can fix later
 		String current = row + "," + col;
 		mapVals.add(current);
+		visited.add(current);
 		while(!mapVals.isEmpty()) {
-			row = Integer.parseInt(current.split(",")[0]);
-			col = Integer.parseInt(current.split(",")[1]);
+			current = mapVals.poll(); 
+			String lastStep = current.split(" ")[current.split(" ").length - 1];
+			row = Integer.parseInt(lastStep.split(",")[0]);
+			col = Integer.parseInt(lastStep.split(",")[1]);
 
 			visited.add(current);
 			//if not already added then add it
 			if(!(col-1 < 0)) {
-				mapVals.add(row + "," + (col-1));
+				String newPath = current + " " + row + "," + (col-1);
+				visited.add(row + "," + (col-1));
+				mapVals.add(newPath);
 				if(maze[row][col-1].equals("$")) {
-					System.out.println((row) + "," + (col-1));
-
+					System.out.println((row) + "," + (col+1));
 					return true;
 				}
 			}
 			if(!(col+1 > maze[0].length-1)) {
-				mapVals.add(row + "," + (col+1));
+				String newPath = current + " " + row + "," + (col+1);
+				visited.add(row + "," + (col+1));
+				mapVals.add(newPath);
 				if(maze[row][col+1].equals("$")) {
 					System.out.println((row) + "," + (col+1));
 					return true;
 				}
 			}
 			if(!(row-1 < 0)) {
-				mapVals.add((row-1) + "," + col);
+				String newPath = current + " " + (row-1) + "," + col;
+				visited.add((row-1) + "," + col);
+				mapVals.add(newPath);
 				if(maze[row-1][col].equals("$")) {
-					System.out.println((row-1) + "," + col);
+					System.out.println(newPath);
 					return true;
 				}
 			}
 			if(!(row+1 > maze.length-1)) {
-				mapVals.add((row+1) + "," + col);
+				String newPath = current + " " + (row+1) + "," + col;
+				visited.add((row+1) + "," + col);
+				mapVals.add(newPath);
 				if(maze[row+1][col].equals("$")) {
-					System.out.println((row+1) + "," + col);
+					System.out.println(newPath);
 					return true;
 				}
 			}
 			//check if any of them is the $ sign
 			
 			
-		
-			current = mapVals.poll();
-			//make row and col variblkes equal to wherever the current index is
 	
 		}
 		
