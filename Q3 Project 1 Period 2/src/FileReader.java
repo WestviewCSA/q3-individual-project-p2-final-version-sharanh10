@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class FileReader {
 
@@ -23,7 +24,7 @@ public class FileReader {
 			System.out.println("");
 		}
 		System.out.println(queueBased(n));
-
+		
 	}
 	
 	public static Queue<String> getText(String passedFile) {
@@ -123,13 +124,19 @@ public class FileReader {
 	public static boolean queueBased(String[][] maze) {
 		Queue<String> mapVals = new ArrayDeque<>();
 		Queue<String> visited = new ArrayDeque<>();
-		int row = 1;
-		int col = 0;
+		int row = 0, col = 0;
+	    for (int r = 0; r < maze.length; r++)
+	        for (int c = 0; c < maze[0].length; c++)
+	            if (maze[r][c].equals("W")) { 
+	            	row = r; col = c; 
+	            	
+	            }
+
 		//assume that starting position is at 1,0 for now - we can fix later
 		String current = row + "," + col;
 		mapVals.add(current);
 		visited.add(current);
-		while(!mapVals.isEmpty()) {
+		while(!mapVals.isEmpty()) {	
 			current = mapVals.poll(); 
 			String lastStep = current.split(" ")[current.split(" ").length - 1];
 			row = Integer.parseInt(lastStep.split(",")[0]);
@@ -137,25 +144,9 @@ public class FileReader {
 
 			visited.add(current);
 			//if not already added then add it
-			if(!(col-1 < 0)) {
-				String newPath = current + " " + row + "," + (col-1);
-				visited.add(row + "," + (col-1));
-				mapVals.add(newPath);
-				if(maze[row][col-1].equals("$")) {
-					System.out.println((row) + "," + (col+1));
-					return true;
-				}
-			}
-			if(!(col+1 > maze[0].length-1)) {
-				String newPath = current + " " + row + "," + (col+1);
-				visited.add(row + "," + (col+1));
-				mapVals.add(newPath);
-				if(maze[row][col+1].equals("$")) {
-					System.out.println((row) + "," + (col+1));
-					return true;
-				}
-			}
-			if(!(row-1 < 0)) {
+			
+			
+			if(!(row-1 < 0)&& !visited.contains((row-1) + "," + col) && !maze[row-1][col].equals("@")) {
 				String newPath = current + " " + (row-1) + "," + col;
 				visited.add((row-1) + "," + col);
 				mapVals.add(newPath);
@@ -164,7 +155,7 @@ public class FileReader {
 					return true;
 				}
 			}
-			if(!(row+1 > maze.length-1)) {
+			if(!(row+1 > maze.length-1)&& !visited.contains((row+1) + "," + col) && !maze[row+1][col].equals("@")) {
 				String newPath = current + " " + (row+1) + "," + col;
 				visited.add((row+1) + "," + col);
 				mapVals.add(newPath);
@@ -175,13 +166,31 @@ public class FileReader {
 			}
 			//check if any of them is the $ sign
 			
-			
+			if(!(col+1 > maze[0].length-1)&& !visited.contains(row + "," + (col+1)) && !maze[row][col+1].equals("@")) {
+				String newPath = current + " " + row + "," + (col+1);
+				visited.add(row + "," + (col+1));
+				mapVals.add(newPath);
+				if(maze[row][col+1].equals("$")) {
+					System.out.println(newPath);
+					return true;
+				}
+			}
+			if(!(col-1 < 0)&& !visited.contains(row + "," + (col-1)) && !maze[row][col-1].equals("@")) {
+				String newPath = current + " " + row + "," + (col-1);
+				visited.add(row + "," + (col-1));
+				mapVals.add(newPath);
+				if(maze[row][col-1].equals("$")) {
+					System.out.println(newPath);
+					return true;
+				}
+			}
 	
 		}
-		
+		//if level found teleport?
 		return false;
 	}
 	//stac based
-
+	
+	
 }
 
