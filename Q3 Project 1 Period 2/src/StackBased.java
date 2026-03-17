@@ -41,5 +41,17 @@ public class StackBased<T> {
 		
 	}
 	
+	public static String[][][] fillMaze(String[][][] maze, String path) {
+		String[][][] newMaze = maze;
+		String[] steps = path.split(" ");
+		for(int i = 0; i<steps.length; i++) {
+			String[] curr = steps[i].split(",");
+			newMaze[Integer.parseInt(curr[0])][Integer.parseInt(curr[0])][Integer.parseInt(curr[0])] = "+";
+		}
+		return newMaze;
+      
+        
+	}
+	
 }
 
