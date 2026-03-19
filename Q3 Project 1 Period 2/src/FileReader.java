@@ -13,21 +13,20 @@ public class FileReader {
 		
 		
 		try {
-		    String[][][] n = getTextCoords("EasyMapCoords");
-		    String[][][] j = getText("EasyMap1");
+		    String[][][] j = getTextCoords("HardMap1");
 		    printMaze(j);
-		    QueueBased<String> queueBased = new QueueBased<>();
+		    StackBased<String> sBased = new StackBased<>();
 		    long startTime = System.nanoTime();
-		    String[][][] newM = (fillMaze(j, queueBased.getMaze(j)));
+		    String[][][] newM = (fillMaze(j, sBased.getMaze(j)));
 			
 			long endTime = System.nanoTime();
-			double elapsed = (endTime - startTime) / 1000000000;
+			double elapsed = (endTime - startTime);
 			System.out.println("Total Runtime: " + elapsed + " seconds");
 			printMaze(newM);
 			System.out.println("");
 			//printCoordinate(n,queueBased.getMaze(n));
-			StackBased<String> sBased = new StackBased<>();
-			
+			//StackBased<String> sBased = new StackBased<>();
+
 			
 
 			
