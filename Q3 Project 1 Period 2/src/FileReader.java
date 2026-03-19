@@ -11,27 +11,34 @@ public class FileReader {
 		// TODO Auto-generated method stub
 		//call the StackBased class to get stack solution
 		
-		Queue q = getText("easyMap1");
-		while(!q.isEmpty()) {
-			System.out.println(q.poll());
-		}
-		System.out.println("");
-		String[][][] n = getTextCoords("EasyMap2");
 		
-		//System.out.println(queueBased(n));
-		//System.out.println(sBased(n));
-		String[][][] newM = (fillMaze(n, queueBased(n)));
-		for (int l = 0; l < newM.length; l++) {
-		    for (int i = 0; i < newM[l].length; i++) {
-		        for (int j = 0; j < newM[l][i].length; j++) {
-		            System.out.print(newM[l][i][j]);
-		        }
-		        System.out.println("");
-		    }
-		    //System.out.println("");
+		try {
+		    String[][][] n = getTextCoords("EasyMapCoords");
+		    String[][][] j = getText("EasyMap1");
+		    printMaze(j);
+		    QueueBased<String> queueBased = new QueueBased<>();
+		    long startTime = System.nanoTime();
+		    String[][][] newM = (fillMaze(j, queueBased.getMaze(j)));
+			
+			long endTime = System.nanoTime();
+			double elapsed = (endTime - startTime) / 1000000000;
+			System.out.println("Total Runtime: " + elapsed + " seconds");
+			printMaze(newM);
+			System.out.println("");
+			//printCoordinate(n,queueBased.getMaze(n));
+			StackBased<String> sBased = new StackBased<>();
+			
+			
+
+			
+		} catch (IllegalMapCharacterException | IncompleteMapException | IncorrectMapFormatException e) {
+		    System.out.println("Error: " + e.getMessage());
+		    System.exit(-1);
 		}
-		System.out.println("");
-		newM = (fillMaze(n, sBased(n)));
+		
+		
+	}
+	public static void printMaze(String[][][] newM) {
 		for (int l = 0; l < newM.length; l++) {
 		    for (int i = 0; i < newM[l].length; i++) {
 		        for (int j = 0; j < newM[l][i].length; j++) {
@@ -43,44 +50,60 @@ public class FileReader {
 		}
 	}
 	
-	public static Queue<String> getText(String passedFile) {
+	public static String[][][] getText(String passedFile) throws IllegalMapCharacterException, IncompleteMapException, IncorrectMapFormatException {{
 		Queue<String> mapVals = new ArrayDeque<>();
 		File file = new File(passedFile);
+		//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
 		Scanner scan;
 		try {
 			scan = new Scanner(file);
 			String rows = scan.next();
 			String cols = scan.next();
 			String levels = scan.next();
-			if(Integer.parseInt(rows)<=0 || Integer.parseInt(cols) <= 0 || Integer.parseInt(levels) <= 0) {
-				System.out.println("Not valid row column combinattion");
-				Queue<String> mapVals1 = new ArrayDeque<>();
-			}
-			while(scan.hasNext()) {
-				String nextVal = scan.next();
-				
-				
-				if (!nextVal.matches("[.$W@]+")) {
-				    // nextVal contains characters other than . $ W @
-					System.out.println("Contains an invalid character");
-					Queue<String> mapVals1 = new ArrayDeque<>();
-					return mapVals1;
+			try {
+	            if (Integer.parseInt(rows) <= 0 || Integer.parseInt(cols) <= 0 || Integer.parseInt(levels) <= 0)
+	                throw new IncorrectMapFormatException("Rows, cols, and levels must be positive non-zero numbers");
+	        } catch (NumberFormatException e) {
+	            throw new IncorrectMapFormatException("First line must be three positive non-zero numbers");
+	        }
+			int numRows = Integer.parseInt(rows);
+	        int numCols = Integer.parseInt(cols);
+	        int numLevels = Integer.parseInt(levels);
+	        scan.nextLine();
+			//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
 
-				}
-				else {
-					mapVals.add(nextVal);
-				}
-				
-			}
+	        String[][][] coords = new String[numLevels][numRows][numCols];
+	        for (int l = 0; l < numLevels; l++) {
+	            for (int i = 0; i < numRows; i++) {
+	            	if (!scan.hasNextLine()) {
+	                    throw new IncompleteMapException("Not enough rows in map");
+	            	}
+	        		//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
+
+	                String line = scan.nextLine();
+	                if (line.length() < numCols) {
+	                    throw new IncompleteMapException("Row " + i + " has too few characters");
+	                }
+	                for (int j = 0; j < numCols; j++) {
+	                	String ch = String.valueOf(line.charAt(j));
+	                    if (!ch.matches("[.$W@|]"))
+	                        throw new IllegalMapCharacterException("Illegal character found: " + ch);
+	                    coords[l][i][j] = ch;
+	                }
+	            }
+	        }
+
+	        return coords;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return mapVals;
+		return null;
 
-	}
+	}}
 	
-	public static String[][][] getTextCoords(String passedFile) {
+	public static String[][][] getTextCoords(String passedFile) throws IncorrectMapFormatException, IncompleteMapException, IncorrectMapFormatException, IllegalMapCharacterException {
+		
 		File file = new File(passedFile);
 		
 		Scanner scan;
@@ -89,6 +112,12 @@ public class FileReader {
 			String rows1 = scan.next();
 			String cols1 = scan.next();
 			String levels1 = scan.next();
+			try {
+			    if (Integer.parseInt(rows1) <= 0 || Integer.parseInt(cols1) <= 0 || Integer.parseInt(levels1) <= 0)
+			        throw new IncorrectMapFormatException("Rows, cols, and levels must be positive non-zero numbers");
+			} catch (NumberFormatException | IncorrectMapFormatException e) {
+			    throw new IncorrectMapFormatException("First line must be three positive non-zero numbers");
+			}
 			String levels;
 			String cols;
 			String rows;
@@ -99,11 +128,7 @@ public class FileReader {
 			while(scan.hasNext()) {
 				String num = scan.next();
 				if (!num.matches("[.$W@|]+")) {
-				    // nextVal contains characters other than . $ W @
-					System.out.println("Contains an invalid character");
-					String[][][] coords1 = new String[0][0][0];
-					return coords1;
-
+				    throw new IllegalMapCharacterException("Illegal character found: " + num);
 				}
 				rows = scan.next();
 				cols = scan.next();
@@ -112,12 +137,9 @@ public class FileReader {
 				
 				//String nextval = scan.next();
 				
-				if(Integer.parseInt(rows1) <= Integer.parseInt(rows) || Integer.parseInt(cols1)<=Integer.parseInt(cols)) {
-					System.out.println("Map specs isn't accurate");
-					String[][][] coords1 = new String[0][0][0];
-					return coords1;
-
-				}
+				if (Integer.parseInt(rows1) <= Integer.parseInt(rows) || Integer.parseInt(cols1) <= Integer.parseInt(cols) || Integer.parseInt(levels1) <= Integer.parseInt(levels)) {
+				    throw new IncompleteMapException("Coordinates don't fit inside the maze: " + rows + "," + cols + "," + levels);
+			}
 				coords[Integer.parseInt(levels)][Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
 			}
 			for (int l = 0; l < Integer.parseInt(levels1); l++)
@@ -136,200 +158,9 @@ public class FileReader {
 
 	}
 	
-	public static String queueBased(String[][][] maze) {
-		Queue<String> mapVals = new ArrayDeque<>();
-		Queue<String> visited = new ArrayDeque<>();
-		int row = 0, col = 0;
-	    for (int r = 0; r < maze[0].length; r++)
-	        for (int c = 0; c < maze[0][0].length; c++)
-	            if (maze[0][r][c].equals("W")) { 
-	            	row = r; col = c; 
-	            	
-	            }
 
-		//assume that starting position is at 1,0 for now - we can fix later
-		String current = row + "," + col+","+0;
-		mapVals.add(current);
-		visited.add(current);
-		while(!mapVals.isEmpty()) {	
-			//System.out.println(current);
-			current = mapVals.poll(); 
-			String[] steps = current.split(" ");
-	        String lastStep = steps[steps.length - 1];
-	        String[] parts = lastStep.split(",");
-	        row = Integer.parseInt(parts[0]);
-	        col = Integer.parseInt(parts[1]);
-	        int level = Integer.parseInt(parts[2]);
-
-			visited.add(current);
-			//if not already added then add it
-			
-			
-			if(!(row-1 < 0)&& !visited.contains((row-1)+","+col+","+level) && !maze[level][row-1][col].equals("@")) {
-				
-				String newOption = (row-1) + "," + col+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row-1][col].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row-1][col].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.add(newOption);
-				mapVals.add(newPath);
-			}
-			if(!(row+1 > maze[0].length-1)&& !visited.contains((row+1)+","+col+","+level) && !maze[level][row+1][col].equals("@")) {
-				String newOption = (row+1) + "," + col+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row+1][col].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row+1][col].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.add(newOption);
-				mapVals.add(newPath);
-			}
-			//check if any of them is the $ sign
-			
-			if(!(col+1 > maze[0][0].length-1)&& !visited.contains((row)+","+(col+1)+","+level) && !maze[level][row][col+1].equals("@")) {
-				String newOption =(row) + "," + (col+1)+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row][col+1].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row][col+1].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.add(newOption);
-				mapVals.add(newPath);
-			}
-			if(!(col-1 < 0)&& !visited.contains((row)+","+(col-1)+","+level) && !maze[level][row][col-1].equals("@")) {
-				String newOption = (row) + "," + (col-1)+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row][col-1].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row][col-1].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.add(newOption);
-				mapVals.add(newPath);
-			}
 	
-		}
-		//if level found teleport
-		return "";
-	}
-	//stac based
-	private static String moveLevels(String[][][] maze, int nextLevel) {
-	    for (int r = 0; r < maze[nextLevel].length; r++)
-	        for (int c = 0; c < maze[nextLevel][0].length; c++)
-	            if (maze[nextLevel][r][c].equals("W"))
-	                return r + "," + c + "," + nextLevel;
-	    return null;
-	}
 	
-	public static String sBased(String[][][] maze) {
-		Stack<String> mapVals = new Stack<>();
-		Stack<String> visited = new Stack<>();
-		int row = 0, col = 0;
-	    for (int r = 0; r < maze[0].length; r++)
-	        for (int c = 0; c < maze[0][0].length; c++)
-	            if (maze[0][r][c].equals("W")) { 
-	            	row = r; col = c; 
-	            	
-	            }
-
-		//assume that starting position is at 1,0 for now - we can fix later
-		String current = row + "," + col+","+0;
-		mapVals.push(current);
-		visited.push(current);
-		while(!mapVals.isEmpty()) {	
-			//System.out.println(current);
-			current = mapVals.pop(); 
-			String[] steps = current.split(" ");
-	        String lastStep = steps[steps.length - 1];
-	        String[] parts = lastStep.split(",");
-	        row = Integer.parseInt(parts[0]);
-	        col = Integer.parseInt(parts[1]);
-	        int level = Integer.parseInt(parts[2]);
-			visited.push(current);
-			//if not already added then add it
-			
-			
-			if(!(row-1 < 0)&& !visited.contains((row-1)+","+col+","+level) && !maze[level][row-1][col].equals("@")) {
-				
-				String newOption = (row-1) + "," + col+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row-1][col].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row-1][col].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.push(newOption);
-				mapVals.push(newPath);
-			}
-			if(!(row+1 > maze[0].length-1)&& !visited.contains((row+1)+","+col+","+level) && !maze[level][row+1][col].equals("@")) {
-				String newOption = (row+1) + "," + col+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row+1][col].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row+1][col].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.push(newOption);
-				mapVals.push(newPath);
-			}
-			//check if any of them is the $ sign
-			
-			if(!(col+1 > maze[0][0].length-1)&& !visited.contains((row)+","+(col+1)+","+level) && !maze[level][row][col+1].equals("@")) {
-				String newOption =(row) + "," + (col+1)+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row][col+1].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row][col+1].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.push(newOption);
-				mapVals.push(newPath);
-			}
-			if(!(col-1 < 0)&& !visited.contains((row)+","+(col-1)+","+level) && !maze[level][row][col-1].equals("@")) {
-				String newOption = (row) + "," + (col-1)+","+level;
-				String newPath  = current + " " + newOption;
-				if(maze[level][row][col-1].equals("$")) {
-					//System.out.println(newPath);
-					return newPath;
-				}
-				if (maze[level][row][col-1].equals("|")) {
-					newOption = moveLevels(maze, level + 1);
-	                newPath = current + " " + newOption;
-	            }
-				visited.push(newOption);
-				mapVals.push(newPath);
-			}
-	
-		}
-		//if level found teleport
-		return "";
-	}
 	public static String[][][] fillMaze(String[][][] maze, String path) {
 		String[][][] newMaze = maze;
 		String[] steps = path.split(" ");
@@ -344,6 +175,18 @@ public class FileReader {
       
         
 	}
+	
+	public static void printCoordinate(String[][][] maze, String path) {
+	    String[] steps = path.split(" ");
+	    for (String step : steps) {
+	        String[] parts = step.split(",");
+	        int row = Integer.parseInt(parts[0]);
+	        int col = Integer.parseInt(parts[1]);
+	        int level = Integer.parseInt(parts[2]);
+	        if (!maze[level][row][col].equals("W") && !maze[level][row][col].equals("$")) {
+	            System.out.println("+ " + row + " " + col + " " + level);
+	        }
+	    }
+	}
 
 }
-

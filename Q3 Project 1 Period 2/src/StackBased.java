@@ -10,48 +10,106 @@ public class StackBased<T> {
 	public StackBased() {
 		myStack= new Stack<>();
 	}
-	public void getMaze(String[][] maze) {
-		/*Queue based approach: 
-	Same as stack based, but now each pop will be the last added element
-	We will essentially be completing one full path and checking for the $
-		 */
-		Stack<String> valsMap = new Stack<>();
+	public String getMaze(String[][][] maze) {
+		Stack<String> mapVals = new Stack<>();
 		Stack<String> visited = new Stack<>();
-		int row = 0;
-		int col = 0;
-		String current = row + "," + col;
-		valsMap.add(current);
-		while(!valsMap.isEmpty()) {
-			row = Integer.parseInt(current.split(",")[0]);
-			col = Integer.parseInt(current.split(",")[1]);
+		int row = 0, col = 0;
+	    for (int r = 0; r < maze[0].length; r++)
+	        for (int c = 0; c < maze[0][0].length; c++)
+	            if (maze[0][r][c].equals("W")) { 
+	            	row = r; col = c; 
+	            	
+	            }
 
-			visited.add(current);
+		//assume that starting position is at 1,0 for now - we can fix later
+		String current = row + "," + col+","+0;
+		mapVals.push(current);
+		visited.push(current);
+		while(!mapVals.isEmpty()) {	
+			//System.out.println(current);
+			current = mapVals.pop(); 
+			String[] steps = current.split(" ");
+	        String lastStep = steps[steps.length - 1];
+	        String[] parts = lastStep.split(",");
+	        row = Integer.parseInt(parts[0]);
+	        col = Integer.parseInt(parts[1]);
+	        int level = Integer.parseInt(parts[2]);
+			visited.push(current);
 			//if not already added then add it
-			if(!(col-1 < 0)) {
-				valsMap.add(row + "," + (col-1));
-				if(maze[row][col-1].equals("$")) {
-					System.out.println((row) + "," + (col-1));
-
+			
+			
+			if(!(row-1 < 0)&& !visited.contains((row-1)+","+col+","+level) && !maze[level][row-1][col].equals("@")) {
+				
+				String newOption = (row-1) + "," + col+","+level;
+				String newPath  = current + " " + newOption;
+				if(maze[level][row-1][col].equals("$")) {
+					//System.out.println(newPath);
+					return newPath;
 				}
+				if (maze[level][row-1][col].equals("|")) {
+					newOption = moveLevels(maze, level + 1);
+	                newPath = current + " " + newOption;
+	            }
+				visited.push(newOption);
+				mapVals.push(newPath);
 			}
-			if (row-1 >= 0) {
-	        }
-			col++;
+			if(!(row+1 > maze[0].length-1)&& !visited.contains((row+1)+","+col+","+level) && !maze[level][row+1][col].equals("@")) {
+				String newOption = (row+1) + "," + col+","+level;
+				String newPath  = current + " " + newOption;
+				if(maze[level][row+1][col].equals("$")) {
+					//System.out.println(newPath);
+					return newPath;
+				}
+				if (maze[level][row+1][col].equals("|")) {
+					newOption = moveLevels(maze, level + 1);
+	                newPath = current + " " + newOption;
+	            }
+				visited.push(newOption);
+				mapVals.push(newPath);
+			}
+			//check if any of them is the $ sign
+			
+			if(!(col+1 > maze[0][0].length-1)&& !visited.contains((row)+","+(col+1)+","+level) && !maze[level][row][col+1].equals("@")) {
+				String newOption =(row) + "," + (col+1)+","+level;
+				String newPath  = current + " " + newOption;
+				if(maze[level][row][col+1].equals("$")) {
+					//System.out.println(newPath);
+					return newPath;
+				}
+				if (maze[level][row][col+1].equals("|")) {
+					newOption = moveLevels(maze, level + 1);
+	                newPath = current + " " + newOption;
+	            }
+				visited.push(newOption);
+				mapVals.push(newPath);
+			}
+			if(!(col-1 < 0)&& !visited.contains((row)+","+(col-1)+","+level) && !maze[level][row][col-1].equals("@")) {
+				String newOption = (row) + "," + (col-1)+","+level;
+				String newPath  = current + " " + newOption;
+				if(maze[level][row][col-1].equals("$")) {
+					//System.out.println(newPath);
+					return newPath;
+				}
+				if (maze[level][row][col-1].equals("|")) {
+					newOption = moveLevels(maze, level + 1);
+	                newPath = current + " " + newOption;
+	            }
+				visited.push(newOption);
+				mapVals.push(newPath);
+			}
+	
 		}
-		
+		//if level found teleport
+		return "";
+	}
+	private static String moveLevels(String[][][] maze, int nextLevel) {
+	    for (int r = 0; r < maze[nextLevel].length; r++)
+	        for (int c = 0; c < maze[nextLevel][0].length; c++)
+	            if (maze[nextLevel][r][c].equals("W"))
+	                return r + "," + c + "," + nextLevel;
+	    return null;
 	}
 	
-	public static String[][][] fillMaze(String[][][] maze, String path) {
-		String[][][] newMaze = maze;
-		String[] steps = path.split(" ");
-		for(int i = 0; i<steps.length; i++) {
-			String[] curr = steps[i].split(",");
-			newMaze[Integer.parseInt(curr[0])][Integer.parseInt(curr[0])][Integer.parseInt(curr[0])] = "+";
-		}
-		return newMaze;
-      
-        
-	}
 	
 }
 
