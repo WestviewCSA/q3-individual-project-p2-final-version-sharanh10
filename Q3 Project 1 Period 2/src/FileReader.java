@@ -11,27 +11,98 @@ public class FileReader {
 		// TODO Auto-generated method stub
 		//call the StackBased class to get stack solution
 		
-		
+		boolean stack = false;
+		boolean queue = false;
+		boolean opt = false;
+	    boolean time = false;
+	    boolean incoordinate = false;
+	    boolean outcoordinate = false;
+	    String inputFile = null;
+	    int c = 0;
+	    for (int i = 0; i < args.length; i++) {
+	        switch (args[i]) {
+	            case "--Stack": stack = true; break;
+	            case "--Queue": queue = true; break;
+	            case "--Opt": opt = true; break;
+	            case "--Time": time = true; break;
+	            case "--Incoordinate": incoordinate = true; break;
+	            case "--Outcoordinate": outcoordinate = true; break;
+	            case "--Help":
+	                System.out.println("This program finds a path through a maze.");
+	                System.out.println("  --Stack          If this switch is set, the stack-based approach will be used");
+	                System.out.println("  --Queue          If this switch is set, the queue-based approach will be used");
+	                System.out.println("  --Opt            If this switch is set, the optimal-based approach will be used");
+	                System.out.println("  --Time           Print runtime of the search");
+	                System.out.println("  --Incoordinate   Input file is coordinate-based format, text-map by default");
+	                System.out.println("  --Outcoordinate  Output in coordinate-based format, text-based by default");
+	                System.out.println("  --Help           Prints the instructions (Same message again)");
+	                System.exit(0);
+	            default:
+	                inputFile = args[i];
+	        }
+	    }
+	    if(stack) {
+	    	c++;
+	    }
+	    if(queue) {
+	    	c++;
+	    }
+	    if(opt) {
+	    	c++;
+	    }
+	    if(c!=1) {
+	    	System.out.println("Error: exactly one of --Stack, --Queue, or --Opt must be set.");
+	        System.exit(-1);
+	    }
+
 		try {
-		    String[][][] j = getTextCoords("HardMap1");
-		    printMaze(j);
-		    StackBased<String> sBased = new StackBased<>();
-		    long startTime = System.nanoTime();
-		    String[][][] newM = (fillMaze(j, sBased.getMaze(j)));
 			
+		    String[][][] n;
+		    if (incoordinate) {
+	            n = getTextCoords(inputFile);
+	        } else {
+	            n = getText(inputFile);
+	        }
+		    long startTime = System.nanoTime();
+		    String path = "";
+		    if(queue) {
+		    	QueueBased<String> q = new QueueBased<>();
+		    	path = q.getMaze(n);
+		    }	
+		    else if(stack) {
+		    	StackBased<String> s = new StackBased<>();
+		    	path = s.getMaze(n);
+		    }
+		    else if(opt) {
+		    	//optimal
+		    }
+		    
 			long endTime = System.nanoTime();
-			double elapsed = (endTime - startTime);
-			System.out.println("Total Runtime: " + elapsed + " seconds");
-			printMaze(newM);
+			if(path.substring(0,1).equals("T")) {
+				System.out.println(path);
+			}
+			else if (outcoordinate) {
+	            printCoordinate(n, path);
+			}
+			else {
+			    String[][][] newM = fillMaze(n, path);
+			    printMaze(newM);
+			}
+			if (time) {
+				double elapsed = (endTime - startTime)/(1000000000.0);
+				System.out.println("Total Runtime: " + elapsed + " seconds");
+	        }
+			
+			//printMaze(newM);
 			System.out.println("");
-			//printCoordinate(n,queueBased.getMaze(n));
-			//StackBased<String> sBased = new StackBased<>();
+			
+	    	
 
 			
 
 			
 		} catch (IllegalMapCharacterException | IncompleteMapException | IncorrectMapFormatException e) {
-		    System.out.println("Error: " + e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 		    System.exit(-1);
 		}
 		
@@ -122,7 +193,6 @@ public class FileReader {
 			String rows;
 			String[][][] coords = new String[Integer.parseInt(levels1)][Integer.parseInt(rows1)][Integer.parseInt(cols1)];
 			
-			System.out.println(Integer.parseInt(rows1)*Integer.parseInt(levels1));
 			
 			while(scan.hasNext()) {
 				String num = scan.next();

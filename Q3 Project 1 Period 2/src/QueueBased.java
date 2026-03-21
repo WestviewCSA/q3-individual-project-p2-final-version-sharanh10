@@ -99,8 +99,8 @@ public class QueueBased<T> {
 			}
 	
 		}
-		//if level found teleport
-		return "";
+		return "The Wolverine Store is closed";
+		//PRINT THAT THERE IS NO POSSIBLE WAY TO SOLVE
 	}
 	//stac based
 	private static String moveLevels(String[][][] maze, int nextLevel) {
