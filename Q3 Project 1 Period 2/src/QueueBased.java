@@ -12,6 +12,7 @@ public class QueueBased<T> {
 		Queue<String> mapVals = new ArrayDeque<>();
 		Queue<String> visited = new ArrayDeque<>();
 		int row = 0, col = 0;
+		//get the row and col for the maze
 	    for (int r = 0; r < maze[0].length; r++)
 	        for (int c = 0; c < maze[0][0].length; c++)
 	            if (maze[0][r][c].equals("W")) { 
@@ -35,6 +36,7 @@ public class QueueBased<T> {
 			//if not already added then add it
 			
 			
+			//follow the algorithm steps
 			if(!(row-1 < 0)&& !visited.contains((row-1)+","+col+","+level) && !maze[level][row-1][col].equals("@")) {
 				
 				String newOption = (row-1) + "," + col+","+level;

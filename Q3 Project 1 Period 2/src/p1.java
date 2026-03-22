@@ -52,6 +52,7 @@ public class p1 {
 	                inputFile = args[i];
 	        }
 	    }
+	    //make sure only 1 of these is set
 	    if(stack) {
 	    	c++;
 	    }
@@ -67,7 +68,7 @@ public class p1 {
 	    }
 
 		try {
-			
+			//get coordinates
 		    String[][][] n;
 		    if (incoordinate) {
 	            n = getTextCoords(inputFile);
@@ -75,6 +76,7 @@ public class p1 {
 	            n = getText(inputFile);
 	        }
 		    
+		    //get path
 		    String 	path = "";
 		    long startTime = System.nanoTime();
 		    if(queue) {
@@ -91,7 +93,7 @@ public class p1 {
 		    }
 		    
 			long endTime = System.nanoTime();
-			
+			//print solution
 			if(path.isEmpty() || path.substring(0,1).equals("T") || path == null) {
 				System.out.println(path);
 			}
@@ -102,12 +104,12 @@ public class p1 {
 			    String[][][] newM = fillMaze(n, path);
 			    System.out.println(printMaze(newM));
 			}
+			//print time
 			if (time) {
 				double elapsed = (endTime - startTime)/(1000000000.0);
 				System.out.println("Total Runtime: " + elapsed + " seconds");
 	        }
 			
-			//printMaze(newM);
 			
 			
 	    	
@@ -118,10 +120,13 @@ public class p1 {
 		} catch (IllegalMapCharacterException | IncompleteMapException | IncorrectMapFormatException e) {
 			System.out.println(e.getMessage());
 		    System.exit(-1);
+		    //catch any errors
 		}
 		
 		
 	}
+	
+	//print the solved/regular maze
 	public static String printMaze(String[][][] newM) {
 		String sol = "";
 		for (int l = 0; l < newM.length; l++) {
@@ -136,7 +141,7 @@ public class p1 {
 		}
 		return sol;
 	}
-	
+	//read text from textfile
 	public static String[][][] getText(String passedFile) throws IllegalMapCharacterException, IncompleteMapException, IncorrectMapFormatException {{
 		File file = new File(passedFile);
 		Scanner scan;
@@ -213,6 +218,7 @@ public class p1 {
 			
 			while(scan.hasNext()) {
 				String num = scan.next();
+				//check for illegal characters and out of bounds exception errors
 				if (!num.matches("[.$W@|]+")) {
 				    throw new IllegalMapCharacterException("Illegal character found: " + num);
 				}
@@ -225,6 +231,7 @@ public class p1 {
 			}
 				coords[Integer.parseInt(levels)][Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
 			}
+			//auto fill . for missing coords
 			for (int l = 0; l < Integer.parseInt(levels1); l++)
 	            for (int i = 0; i < Integer.parseInt(rows1); i++)
 	                for (int j = 0; j < Integer.parseInt(cols1); j++)
@@ -259,6 +266,7 @@ public class p1 {
         
 	}
 	
+	//use the path with the coordinates and print them out
 	public static String printCoordinate(String[][][] maze, String path) {
 	    String[] steps = path.split(" ");
 	    String sol = "";
@@ -268,9 +276,12 @@ public class p1 {
 	        int col = Integer.parseInt(parts[1]);
 	        int level = Integer.parseInt(parts[2]);
 	        if (!maze[level][row][col].equals("W") && !maze[level][row][col].equals("$")) {
+	        	//in format of + 0 0 1
+	        	
 	            sol += ("+ " + row + " " + col + " " + level + "\n");
 	        }
 	    }
+	    //remove the last break at the last line
 	    if (sol.endsWith("\n")) {
 	        sol = sol.substring(0, sol.length() - 1);
 	    }
