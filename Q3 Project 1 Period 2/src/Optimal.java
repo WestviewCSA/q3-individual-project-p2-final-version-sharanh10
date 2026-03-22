@@ -3,6 +3,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Optimal<T> {
+	//same as queue except using priority queue and score method 
     int dollarRow;
     int dollarCol;
     int dollarLevel;
