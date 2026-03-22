@@ -9,7 +9,7 @@ class TestCases {
         String[][][] maze = p1.getText("easyMap4");
         QueueBased<String> q = new QueueBased<>();
         String path = q.getMaze(maze);
-        assertEquals("The Wolverine Store is closed", path);
+        assertEquals("The Wolverine Store is closed.", path);
     }
 	
 	@Test
@@ -87,7 +87,7 @@ class TestCases {
 	        	    "+ 5 8 0\n" +
 	        	    "+ 5 7 0\n" +
 	        	    "+ 6 7 0\n" +
-	        	    "+ 7 7 0\n";
+	        	    "+ 7 7 0";
 	        assertTrue(p1.printCoordinate(maze, qPath).equals(str));
 		} catch (IllegalMapCharacterException e) {
 			// TODO Auto-generated catch block
@@ -114,7 +114,7 @@ class TestCases {
 	        	    "@W@@@\n" +
 	        	    "@++@.\n" +
 	        	    "@@+@@\n" +
-	        	    "@@$@.\n";
+	        	    "@@$@.";
 	        assertTrue(p1.printMaze(p1.fillMaze(maze, sPath)).equals(str));
 		} catch (IllegalMapCharacterException e) {
 			// TODO Auto-generated catch block

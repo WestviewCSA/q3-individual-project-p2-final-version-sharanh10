@@ -3,7 +3,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Optimal<T> {
-	//same as queue except using priority queue and score method 
     int dollarRow;
     int dollarCol;
     int dollarLevel;
@@ -101,11 +100,10 @@ public class Optimal<T> {
         String[] parts = steps[steps.length - 1].split(",");
         int row = Integer.parseInt(parts[0]);
         int col = Integer.parseInt(parts[1]);
-        int g = steps.length;
         int level = Integer.parseInt(parts[2]);
         int stepsTaken = steps.length;
         int h = Math.abs(row - dollarRow) + Math.abs(col - dollarCol) + Math.abs(level - dollarLevel);
-        return g + h;
+        return stepsTaken + h;
     }
 
     private String moveLevels(String[][][] maze, int nextLevel) {

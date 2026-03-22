@@ -8,9 +8,7 @@ import java.util.Stack;
 public class p1 {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//call the StackBased class to get stack solution
-		
+		// TODO Auto-generated method stub		
 		boolean stack = false;
 		boolean queue = false;
 		boolean opt = false;
@@ -76,8 +74,9 @@ public class p1 {
 	        } else {
 	            n = getText(inputFile);
 	        }
+		    
+		    String 	path = "";
 		    long startTime = System.nanoTime();
-		    String path = "";
 		    if(queue) {
 		    	QueueBased<String> q = new QueueBased<>();
 		    	path = q.getMaze(n);
@@ -134,15 +133,12 @@ public class p1 {
 	                sol += "\n";
 	            }
 		    }
-		    //System.out.println("");
 		}
 		return sol;
 	}
 	
 	public static String[][][] getText(String passedFile) throws IllegalMapCharacterException, IncompleteMapException, IncorrectMapFormatException {{
-		Queue<String> mapVals = new ArrayDeque<>();
 		File file = new File(passedFile);
-		//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
 		Scanner scan;
 		try {
 			scan = new Scanner(file);
@@ -159,7 +155,6 @@ public class p1 {
 	        int numCols = Integer.parseInt(cols);
 	        int numLevels = Integer.parseInt(levels);
 	        scan.nextLine();
-			//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
 
 	        String[][][] coords = new String[numLevels][numRows][numCols];
 	        for (int l = 0; l < numLevels; l++) {
@@ -167,7 +162,6 @@ public class p1 {
 	            	if (!scan.hasNextLine()) {
 	                    throw new IncompleteMapException("Not enough rows in map");
 	            	}
-	        		//DOESNT WORK FULLY - NEEDS GTO CATCH EXTRA . AND @
 
 	                String line = scan.nextLine();
 	                if (line.length() < numCols) {
@@ -190,6 +184,7 @@ public class p1 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//need to return something
 		return null;
 
 	}}
@@ -225,9 +220,6 @@ public class p1 {
 				cols = scan.next();
 				
 				levels = scan.next();
-				
-				//String nextval = scan.next();
-				
 				if (Integer.parseInt(rows1) <= Integer.parseInt(rows) || Integer.parseInt(cols1) <= Integer.parseInt(cols) || Integer.parseInt(levels1) <= Integer.parseInt(levels)) {
 				    throw new IncompleteMapException("Coordinates don't fit inside the maze: " + rows + "," + cols + "," + levels);
 			}
@@ -257,9 +249,7 @@ public class p1 {
 		String[] steps = path.split(" ");
 		
 		for(int i = 0; i<steps.length; i++) {
-			String[] curr = steps[i].split(",");
-			//System.out.println(curr[0]);
-			
+			String[] curr = steps[i].split(",");			
 			if(!(newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])].equals("W")) && !newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])].equals("$")) {
 				newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])] = "+";
 			}

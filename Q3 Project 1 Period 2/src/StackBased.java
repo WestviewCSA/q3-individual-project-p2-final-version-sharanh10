@@ -21,12 +21,10 @@ public class StackBased<T> {
 	            	
 	            }
 
-		//assume that starting position is at 1,0 for now - we can fix later
 		String current = row + "," + col+","+0;
 		mapVals.push(current);
 		visited.push(current);
 		while(!mapVals.isEmpty()) {	
-			//System.out.println(current);
 			current = mapVals.pop(); 
 			String[] steps = current.split(" ");
 	        String lastStep = steps[steps.length - 1];
@@ -43,7 +41,6 @@ public class StackBased<T> {
 				String newOption = (row-1) + "," + col+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row-1][col].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row-1][col].equals("|")) {
@@ -57,7 +54,6 @@ public class StackBased<T> {
 				String newOption = (row+1) + "," + col+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row+1][col].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row+1][col].equals("|")) {
@@ -73,7 +69,6 @@ public class StackBased<T> {
 				String newOption =(row) + "," + (col+1)+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row][col+1].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row][col+1].equals("|")) {
@@ -87,7 +82,6 @@ public class StackBased<T> {
 				String newOption = (row) + "," + (col-1)+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row][col-1].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row][col-1].equals("|")) {
@@ -99,9 +93,9 @@ public class StackBased<T> {
 			}
 	
 		}
-		//if level found teleport
 		return "The Wolverine Store is closed.";
 	}
+	//if level found teleport
 	private static String moveLevels(String[][][] maze, int nextLevel) {
 	    for (int r = 0; r < maze[nextLevel].length; r++)
 	        for (int c = 0; c < maze[nextLevel][0].length; c++)

@@ -7,7 +7,6 @@ public class QueueBased<T> {
 	int col;
 	String current;
 	public QueueBased() {
-		//delete
 	}
 	public String getMaze(String[][][] maze) {
 		Queue<String> mapVals = new ArrayDeque<>();
@@ -20,12 +19,10 @@ public class QueueBased<T> {
 	            	
 	            }
 
-		//assume that starting position is at 1,0 for now - we can fix later
-		String current = row + "," + col+","+0;
+	    String current = row + "," + col+","+0;
 		mapVals.add(current);
 		visited.add(current);
 		while(!mapVals.isEmpty()) {	
-			//System.out.println(current);
 			current = mapVals.poll(); 
 			String[] steps = current.split(" ");
 	        String lastStep = steps[steps.length - 1];
@@ -56,7 +53,6 @@ public class QueueBased<T> {
 				String newOption = (row+1) + "," + col+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row+1][col].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row+1][col].equals("|")) {
@@ -72,7 +68,6 @@ public class QueueBased<T> {
 				String newOption =(row) + "," + (col+1)+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row][col+1].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row][col+1].equals("|")) {
@@ -86,7 +81,6 @@ public class QueueBased<T> {
 				String newOption = (row) + "," + (col-1)+","+level;
 				String newPath  = current + " " + newOption;
 				if(maze[level][row][col-1].equals("$")) {
-					//System.out.println(newPath);
 					return newPath;
 				}
 				if (maze[level][row][col-1].equals("|")) {
@@ -99,9 +93,8 @@ public class QueueBased<T> {
 	
 		}
 		return "The Wolverine Store is closed.";
-		//PRINT THAT THERE IS NO POSSIBLE WAY TO SOLVE
 	}
-	//stac based
+	//move to next level when | is found
 	private static String moveLevels(String[][][] maze, int nextLevel) {
 	    for (int r = 0; r < maze[nextLevel].length; r++)
 	        for (int c = 0; c < maze[nextLevel][0].length; c++)
