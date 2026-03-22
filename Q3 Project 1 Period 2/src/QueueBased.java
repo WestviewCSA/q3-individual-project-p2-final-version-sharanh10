@@ -3,12 +3,11 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class QueueBased<T> {
-	private Queue<T> myQueue;
 	int row;
 	int col;
 	String current;
 	public QueueBased() {
-		myQueue= new ArrayDeque<>();
+		//delete
 	}
 	public String getMaze(String[][][] maze) {
 		Queue<String> mapVals = new ArrayDeque<>();
@@ -99,7 +98,7 @@ public class QueueBased<T> {
 			}
 	
 		}
-		return "The Wolverine Store is closed";
+		return "The Wolverine Store is closed.";
 		//PRINT THAT THERE IS NO POSSIBLE WAY TO SOLVE
 	}
 	//stac based

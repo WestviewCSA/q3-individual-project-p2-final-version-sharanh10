@@ -100,7 +100,7 @@ public class StackBased<T> {
 	
 		}
 		//if level found teleport
-		return "";
+		return "The Wolverine Store is closed.";
 	}
 	private static String moveLevels(String[][][] maze, int nextLevel) {
 	    for (int r = 0; r < maze[nextLevel].length; r++)

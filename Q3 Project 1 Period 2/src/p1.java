@@ -5,7 +5,7 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 
-public class FileReader {
+public class p1 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -21,12 +21,25 @@ public class FileReader {
 	    int c = 0;
 	    for (int i = 0; i < args.length; i++) {
 	        switch (args[i]) {
-	            case "--Stack": stack = true; break;
-	            case "--Queue": queue = true; break;
-	            case "--Opt": opt = true; break;
-	            case "--Time": time = true; break;
-	            case "--Incoordinate": incoordinate = true; break;
-	            case "--Outcoordinate": outcoordinate = true; break;
+	        //basically if statements but we can use cases as switches
+	            case "--Stack": 
+	            	stack = true; 
+	            	break;
+	            case "--Queue": 
+	            	queue = true; 
+	            	break;
+	            case "--Opt": 
+	            	opt = true; 
+	            	break;
+	            case "--Time": 
+	            	time = true; 
+	            	break;
+	            case "--Incoordinate": 
+	            	incoordinate = true; 
+	            	break;
+	            case "--Outcoordinate": 
+	            	outcoordinate = true; 
+	            	break;
 	            case "--Help":
 	                System.out.println("This program finds a path through a maze.");
 	                System.out.println("  --Stack          If this switch is set, the stack-based approach will be used");
@@ -51,7 +64,7 @@ public class FileReader {
 	    	c++;
 	    }
 	    if(c!=1) {
-	    	System.out.println("Error: exactly one of --Stack, --Queue, or --Opt must be set.");
+	    	System.out.println("Exactly one of --Stack, --Queue, or --Opt must be set.");
 	        System.exit(-1);
 	    }
 
@@ -73,20 +86,22 @@ public class FileReader {
 		    	StackBased<String> s = new StackBased<>();
 		    	path = s.getMaze(n);
 		    }
-		    else if(opt) {
-		    	//optimal
+		    else if (opt) {
+		        Optimal<String> o = new Optimal<>();
+		        path = o.getMaze(n);
 		    }
 		    
 			long endTime = System.nanoTime();
-			if(path.substring(0,1).equals("T")) {
+			
+			if(path.isEmpty() || path.substring(0,1).equals("T") || path == null) {
 				System.out.println(path);
 			}
 			else if (outcoordinate) {
-	            printCoordinate(n, path);
+	            System.out.println(printCoordinate(n, path));
 			}
 			else {
 			    String[][][] newM = fillMaze(n, path);
-			    printMaze(newM);
+			    System.out.println(printMaze(newM));
 			}
 			if (time) {
 				double elapsed = (endTime - startTime)/(1000000000.0);
@@ -94,7 +109,7 @@ public class FileReader {
 	        }
 			
 			//printMaze(newM);
-			System.out.println("");
+			
 			
 	    	
 
@@ -102,22 +117,26 @@ public class FileReader {
 
 			
 		} catch (IllegalMapCharacterException | IncompleteMapException | IncorrectMapFormatException e) {
-			System.out.println("Error: " + e.getMessage());
+			System.out.println(e.getMessage());
 		    System.exit(-1);
 		}
 		
 		
 	}
-	public static void printMaze(String[][][] newM) {
+	public static String printMaze(String[][][] newM) {
+		String sol = "";
 		for (int l = 0; l < newM.length; l++) {
 		    for (int i = 0; i < newM[l].length; i++) {
 		        for (int j = 0; j < newM[l][i].length; j++) {
-		            System.out.print(newM[l][i][j]);
+		            sol += (newM[l][i][j]);
 		        }
-		        System.out.println("");
+		        if (l != newM.length - 1 || i != newM[l].length - 1) {
+	                sol += "\n";
+	            }
 		    }
 		    //System.out.println("");
 		}
+		return sol;
 	}
 	
 	public static String[][][] getText(String passedFile) throws IllegalMapCharacterException, IncompleteMapException, IncorrectMapFormatException {{
@@ -134,7 +153,7 @@ public class FileReader {
 	            if (Integer.parseInt(rows) <= 0 || Integer.parseInt(cols) <= 0 || Integer.parseInt(levels) <= 0)
 	                throw new IncorrectMapFormatException("Rows, cols, and levels must be positive non-zero numbers");
 	        } catch (NumberFormatException e) {
-	            throw new IncorrectMapFormatException("First line must be three positive non-zero numbers");
+	            throw new IncorrectMapFormatException("First line must have only positive non-zero numbers");
 	        }
 			int numRows = Integer.parseInt(rows);
 	        int numCols = Integer.parseInt(cols);
@@ -153,6 +172,9 @@ public class FileReader {
 	                String line = scan.nextLine();
 	                if (line.length() < numCols) {
 	                    throw new IncompleteMapException("Row " + i + " has too few characters");
+	                }
+	                if (line.length() > numCols) {
+	                    throw new IncompleteMapException("Row " + i + " has too many characters");
 	                }
 	                for (int j = 0; j < numCols; j++) {
 	                	String ch = String.valueOf(line.charAt(j));
@@ -233,9 +255,11 @@ public class FileReader {
 	public static String[][][] fillMaze(String[][][] maze, String path) {
 		String[][][] newMaze = maze;
 		String[] steps = path.split(" ");
+		
 		for(int i = 0; i<steps.length; i++) {
 			String[] curr = steps[i].split(",");
 			//System.out.println(curr[0]);
+			
 			if(!(newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])].equals("W")) && !newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])].equals("$")) {
 				newMaze[Integer.parseInt(curr[2])][Integer.parseInt(curr[0])][Integer.parseInt(curr[1])] = "+";
 			}
@@ -245,17 +269,24 @@ public class FileReader {
         
 	}
 	
-	public static void printCoordinate(String[][][] maze, String path) {
+	public static String printCoordinate(String[][][] maze, String path) {
 	    String[] steps = path.split(" ");
+	    String sol = "";
 	    for (String step : steps) {
 	        String[] parts = step.split(",");
 	        int row = Integer.parseInt(parts[0]);
 	        int col = Integer.parseInt(parts[1]);
 	        int level = Integer.parseInt(parts[2]);
 	        if (!maze[level][row][col].equals("W") && !maze[level][row][col].equals("$")) {
-	            System.out.println("+ " + row + " " + col + " " + level);
+	            sol += ("+ " + row + " " + col + " " + level + "\n");
 	        }
 	    }
+	    if (sol.endsWith("\n")) {
+	        sol = sol.substring(0, sol.length() - 1);
+	    }
+	    return sol;
 	}
+	
+	
 
 }
