@@ -231,7 +231,7 @@ public class p1 {
 			}
 				coords[Integer.parseInt(levels)][Integer.parseInt(rows)][Integer.parseInt(cols)] = num;
 			}
-			//auto fill . for missing coords
+			//auto fill
 			for (int l = 0; l < Integer.parseInt(levels1); l++)
 	            for (int i = 0; i < Integer.parseInt(rows1); i++)
 	                for (int j = 0; j < Integer.parseInt(cols1); j++)
